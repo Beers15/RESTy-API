@@ -1,0 +1,49 @@
+$backgroundColor: #f5f5f5;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: $backgroundColor;
+  height: 100%;
+  #root {  
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    background-image: url('./send.png');
+    background-repeat: no-repeat;
+    background-attachment:fixed;
+    background-position:center; 
+  }
+
+  #input-container {
+    margin-bottom: 5px;
+    background-color: azure;
+    color:blue;
+    font-size: 16px;
+    box-shadow: 2px 2px 4px #000000;
+    padding: 10px;
+  
+  }
+
+  footer {
+    background: darken($backgroundColor, 50);
+    border-top: 1px solid #eee;
+    padding: 1em 3em;
+    margin: 0;
+  }
+
+  header {
+    background: darken($backgroundColor, 75);
+    border-bottom: 1px solid #eee;
+    color: #eee;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+}
