@@ -13,7 +13,7 @@ __Phase 1: Application Setup__
 
 ### CodeSandbox URL
 
-  _Live application code found [here]()_
+  _Live application code found [here](https://codesandbox.io/s/ecstatic-lewin-8fn0x)_
 
 ### Diagram
 
