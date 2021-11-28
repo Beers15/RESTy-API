@@ -23,7 +23,7 @@ const Form = (props) => {
       <form onSubmit={handleSubmit}>
         <label>
           <span>&nbsp;URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <input name='url' type='text' />
+          <input id="url-input" name='url' type='text' />     
           <button type="submit">GO!</button>
         </label>
         <label className="methods">

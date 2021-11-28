@@ -1,5 +1,29 @@
+section {
+  border: 20px solid LightGray;
+  margin: auto;
+  margin-top: 20px;
+  padding: 10px;
+}
+
 #results-container {
-  pre {
-    color:blue;
+  max-width: 550px;
+  .value-txt {
+    color: darkorange;
+  }
+
+  .key-txt {
+    color: rgb(3, 6, 43);
+    font-weight: 500;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  }
+
+  .result-txt {
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial', Arial, sans-serif;
+  }
+
+  p {
+    color:black;
+    overflow-wrap: break-all;
   }
 }
