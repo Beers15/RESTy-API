@@ -18,7 +18,7 @@ __Phase 2__
 
 ### CodeSandbox URL
 
-  _Live application code found [here](https://codesandbox.io/s/ecstatic-lewin-8fn0x)_
+  _Live application code found [here](https://beers15.github.io/RESTy-API/)_
 
 ### Diagram
 
