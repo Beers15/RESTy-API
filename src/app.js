@@ -11,29 +11,32 @@ import axios from 'axios';
 
 const App = () => {
   const [data, setData] = useState(null);
+  const [loading, isLoading] = useState(false);
   const [requestParams, setRequestParams] = useState({});
   let res;
 
   const callApi = async (requestParams) => {
+    console.log(requestParams);
+
     switch(requestParams.method) {
       case 'GET':
-        res = await performGET(requestParams);
+        res = await performGET(requestParams, setData);
         setData(res);
         break;
       case 'POST':
         //res = await performPOST(requestParams);
         res = { message: "This method not supported yet." };
-        setData(res);
+        setData(res, setData);
         break;
       case 'PUT':
         //res = await performPUT(requestParams);
         res = { message: "This method not supported yet." };
-        setData(res);
+        setData(res, setData);
         break;
       case 'DELETE':
         //res = await performDELETE(requestParams);
         res = { message: "This method not supported yet." };
-        setData(res);
+        setData(res, setData);
         break;
       default:
         console.log("Invalid method choice given");
@@ -50,10 +53,10 @@ const App = () => {
       <Header />
       
       <div id="main-container">
-        <Form handleApiCall={callApi} />
+        <Form handleApiCall={callApi} isLoading={isLoading} />
         <div>Request Method: {requestParams.method}</div>
         <div>URL: {requestParams.url}</div>
-        <Results data={data} />
+        <Results data={data} loading={loading} />
       </div>  
       
       <Footer />
@@ -61,13 +64,16 @@ const App = () => {
   );
 }
 
-const performGET = async (requestParams) => {
+const performGET = async (requestParams, setData) => {
   try {
     let res = await axios.get(requestParams.url);
     console.log(res.data);
-    return res.data;
+    return res;
   } catch(err) {
-    return { "Error": err.response.statusText };
+    if(err.response) {
+      return { "Error": err.response.statusText };
+    }
+    return { "Error": "Unable to process a request with those values." }
   }
 }
 
