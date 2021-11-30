@@ -14,9 +14,14 @@ __Phase 2__
 * A user will be able to enter a REST Method and URL to an API
 * A user will be able to see a summary of their request as well as get results returned from an API request in their browser in a readable format
 
+__Phase 3__
+
+* A user will be able to enter the URL to an API and issue a GET request so that they can retrieve its data
+* A user will be able to see the results returned from an API request in their browser in a readable format
+
 ------------
 
-### CodeSandbox URL
+### Deployment
 
   _Live application code found [here](https://beers15.github.io/RESTy-API/)_
 

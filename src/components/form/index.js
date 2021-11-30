@@ -7,27 +7,22 @@ const Form = (props) => {
   const [body, setBody] = useState(null);
 
   const handleSubmit = e => {
-    props.isLoading(true);
     e.preventDefault();
 
-    //mocking load time for the purpose of showing loading feedback
-    setTimeout(() => {
-      let checkedBody = {}
+    let checkedBody = {}
 
-      try {
-        checkedBody = JSON.parse(body);
-      } catch(err) {
-        console.log("Invalid JSON entered into the form by user")
-      }
-      
-      const formData = {
-        method: method || 'GET',
-        url: e.target.url.value,
-        body: checkedBody,
-      };
-      props.handleApiCall(formData);  
-      props.isLoading(false);
-    }, 500);
+    try {
+      checkedBody = JSON.parse(body);
+    } catch(err) {
+      console.log("Invalid JSON entered into the form by user")
+    }
+    
+    const formData = {
+      method: method || 'GET',
+      url: e.target.url.value,
+      body: checkedBody,
+    };
+    props.setRequestParams(formData);  
   }
 
   const handleMethodClick = (e) => {

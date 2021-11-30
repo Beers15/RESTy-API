@@ -1,8 +1,6 @@
-import React from 'react';
-
 import './app.scss';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
@@ -14,56 +12,62 @@ const App = () => {
   const [loading, isLoading] = useState(false);
   const [requestParams, setRequestParams] = useState({});
 
-  const callApi = async (requestParams) => {
-    console.log(requestParams);
 
-    switch(requestParams.method) {
-      case 'GET':
-        res = await performGET(requestParams, setData);
+  useEffect(() => {
+    async function callApi() {
+      isLoading(true);
+      let res;
+      if(requestParams.url === '') {
+        res = { message: "Empty url provided. Try something a bit more interesting." };
         setData(res);
-        break;
-      case 'POST':
-        //res = await performPOST(requestParams);
-        res = { message: "This method not supported yet." };
-        setData(res, setData);
-        break;
-      case 'PUT':
-        //res = await performPUT(requestParams);
-        res = { message: "This method not supported yet." };
-        setData(res, setData);
-        break;
-      case 'DELETE':
-        //res = await performDELETE(requestParams);
-        res = { message: "This method not supported yet." };
-        setData(res, setData);
-        break;
-      default:
-        console.log("Invalid method choice given");
-        setData('Invalid method choice given');
+        return;
+      }
+      switch(requestParams.method) {
+        case 'GET':
+          res = await performGET(requestParams);
+          setData(res);
+          break;
+        case 'POST':
+          //res = await performPOST(requestParams);
+          res = { message: "This method not supported yet." };
+          setData(res);
+          break;
+        case 'PUT':
+          //res = await performPUT(requestParams);
+          res = { message: "This method not supported yet." };
+          setData(res);
+          break;
+        case 'DELETE':
+          //res = await performDELETE(requestParams);
+          res = { message: "This method not supported yet." };
+          setData(res);
+          break;
+        default:
+          console.log("Invalid method choice given");
+          setData('Invalid method choice given');
+      }
+      isLoading(false);
     }
-
-    const data = res;
-    setData(data);
-    setRequestParams(requestParams);
-  }
+    callApi();
+  }, [requestParams]);
 
   return (
-    <React.Fragment>     
+    <>     
       <Header />
       
       <div id="main-container">
-        <Form handleApiCall={callApi} isLoading={isLoading} />
+        <Form setRequestParams={setRequestParams} />
         <div>Request Method: {requestParams.method}</div>
         <div>URL: {requestParams.url}</div>
         <Results data={data} loading={loading} />
       </div>  
       
       <Footer />
-    </React.Fragment>
+    </>
   );
 }
 
-const performGET = async (requestParams, setData) => {
+const performGET = async (requestParams) => {
   try {
     let res = await axios.get(requestParams.url);
     console.log(res.data);
@@ -81,11 +85,12 @@ const performGET = async (requestParams, setData) => {
 //     headers: {
 //       'Access-Control-Allow-Origin': '*',
 //       'Content-Type': 'application/json',
+//       'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 //     }
 //   }
 
 //   try {
-//     let res = await axios.post(requestParams.url, {}, config);
+//     let res = await axios.post(requestParams.url, requestParams.body, config);
 //     console.log(res.data);
 //     return res.data;
 //   } catch(err) {
@@ -102,7 +107,7 @@ const performGET = async (requestParams, setData) => {
 //   }
 
 //   try {
-//     let res = await axios.put(requestParams.url, {}, config);
+//     let res = await axios.put(requestParams.url, requestParams.body, config);
 //     console.log(res.data);
 //     return res.data;
 //   } catch(err) {
