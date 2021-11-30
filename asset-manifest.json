@@ -1,20 +1,20 @@
 {
   "files": {
     "main.css": "/RESTy-API/static/css/main.b85a1ac4.chunk.css",
-    "main.js": "/RESTy-API/static/js/main.f61b9cae.chunk.js",
-    "main.js.map": "/RESTy-API/static/js/main.f61b9cae.chunk.js.map",
+    "main.js": "/RESTy-API/static/js/main.4f616ffa.chunk.js",
+    "main.js.map": "/RESTy-API/static/js/main.4f616ffa.chunk.js.map",
     "runtime-main.js": "/RESTy-API/static/js/runtime-main.36dbd420.js",
     "runtime-main.js.map": "/RESTy-API/static/js/runtime-main.36dbd420.js.map",
-    "static/js/2.7d1adf1b.chunk.js": "/RESTy-API/static/js/2.7d1adf1b.chunk.js",
-    "static/js/2.7d1adf1b.chunk.js.map": "/RESTy-API/static/js/2.7d1adf1b.chunk.js.map",
+    "static/js/2.d371dd8f.chunk.js": "/RESTy-API/static/js/2.d371dd8f.chunk.js",
+    "static/js/2.d371dd8f.chunk.js.map": "/RESTy-API/static/js/2.d371dd8f.chunk.js.map",
     "index.html": "/RESTy-API/index.html",
     "static/css/main.b85a1ac4.chunk.css.map": "/RESTy-API/static/css/main.b85a1ac4.chunk.css.map",
-    "static/js/2.7d1adf1b.chunk.js.LICENSE.txt": "/RESTy-API/static/js/2.7d1adf1b.chunk.js.LICENSE.txt"
+    "static/js/2.d371dd8f.chunk.js.LICENSE.txt": "/RESTy-API/static/js/2.d371dd8f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.36dbd420.js",
-    "static/js/2.7d1adf1b.chunk.js",
+    "static/js/2.d371dd8f.chunk.js",
     "static/css/main.b85a1ac4.chunk.css",
-    "static/js/main.f61b9cae.chunk.js"
+    "static/js/main.4f616ffa.chunk.js"
   ]
 }
