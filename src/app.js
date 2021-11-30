@@ -11,7 +11,6 @@ const App = () => {
   const [data, setData] = useState(null);
   const [loading, isLoading] = useState(false);
   const [requestParams, setRequestParams] = useState({});
-  let res;
 
   useEffect(() => {
     async function callApi() {
