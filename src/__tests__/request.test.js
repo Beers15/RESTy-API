@@ -1,30 +1,38 @@
-// __tests__/fetch.test.js
-import React from 'react'
-import {rest} from 'msw'
-import {setupServer} from 'msw/node'
-import {render, fireEvent, waitFor, screen} from '@testing-library/react'
-import '@testing-library/jest-dom'
-import Form from '../components/form';
-import Results from '../components/results'
+import { rest } from "msw";
+import { setupServer } from 'msw/node';
+import { render, screen, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
+import Results from '../components/results';
+
+// setup our mocked API endpoints
 const server = setupServer(
-  rest.get('/', (req, res, ctx) => {
-    return res(ctx.json({}))
+  rest.get('*', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        results: [{ "headers": {}, "data": {} }]
+      })
+    )
   }),
-)
+);
 
-beforeAll(() => server.listen())
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
+// listen for requests from our mocked server
+beforeAll(() => {
+  server.listen();
+});
 
-test('loads and displays greeting', async () => {
-  // let callback = jest.fn();
-  // render( <Form setRequestParams={callback} /> );
-  // render( <Results data={{}} loading={false}  /> );
+describe('Testing the results component', () => {
+  it('should display results from an api call', async () => {
 
-  // fireEvent.click(screen.getByText('GO!'))
+    // should render something
+    render(<Results data={{ "headers": {}, "data": {} }} />);
 
-  // await waitFor(() => screen.getByRole('pre'))
+    // what is rendered should include and elements with the test id = 'results'
+    await waitFor( () => {
+      screen.getByTestId('result-data');
+    });
 
-  // expect(screen.getByRole('pre')).toHaveTextContent('')
-})
+    // results should be present
+    expect(screen.getByTestId('result-data')).toBeInTheDocument();
+  });
+});

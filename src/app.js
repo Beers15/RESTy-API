@@ -1,55 +1,137 @@
 import './app.scss';
 
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
+import History from './components/history';
 import axios from 'axios';
 
 const App = () => {
-  const [data, setData] = useState(null);
-  const [loading, isLoading] = useState(false);
-  const [requestParams, setRequestParams] = useState({});
-
+  let initialState = {
+    loading: false,
+    data: null,
+    method: 'GET',
+    body: {},
+    url: '',
+    history: []
+  }
+  
+  let reducer = (state, action) => {
+    switch(action.type) {
+      
+      case 'SET_DATA':
+        return {
+          ...state,
+          data: action.payload
+        }
+      case 'SET_LOADING':
+        return {
+          ...state,
+          loading: action.payload
+        }
+      case 'SET_REQUEST_PARAMS':
+        return {
+          ...state,
+          method: action.payload.method,
+          body: action.payload.body,
+          url: action.payload.url
+        }
+      case 'SET_HISTORY':
+        return {
+          ...state,
+          history: [...state.history, action.payload]
+        }
+      default:
+        return state;
+    }
+  }
+  
+  let [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    async function callApi() {
-      isLoading(true);
-      let res;
-      if(requestParams.url === '') {
-        res = { message: "Empty url provided. Try something a bit more interesting." };
-        setData(res);
-        return;
+    if(state.url.length > 0) {
+      let action = { type: 'SET_LOADING', payload: true }
+      dispatch(action);
+     
+      async function callApi() {
+        let action = { type: 'SET_DATA', payload: null}
+        let res;
+
+        switch(state.method) {
+          case 'GET':
+            let { headers, data } = await performGET(state.url);
+            action.payload = { headers, data };
+            console.log(headers, data)
+            dispatch(action);
+
+            //update history with request data and used url
+            let history = [];
+            history = JSON.parse(localStorage.getItem('history')) || [];
+            history.push({url: state.url, data: { headers, data }});
+            localStorage.setItem('history', JSON.stringify(history));
+
+            break;
+          case 'POST':
+            //res = await performPOST(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+          
+            dispatch(action);
+            break;
+          case 'PUT':
+            //res = await performPUT(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+            break;
+          case 'DELETE':
+            //res = await performDELETE(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+            break;
+          default:
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+        }
       }
-      switch(requestParams.method) {
-        case 'GET':
-          res = await performGET(requestParams);
-          setData(res);
-          break;
-        case 'POST':
-          //res = await performPOST(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        case 'PUT':
-          //res = await performPUT(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        case 'DELETE':
-          //res = await performDELETE(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        default:
-          console.log("Invalid method choice given");
-          setData('Invalid method choice given');
-      }
-      isLoading(false);
+     
+      callApi();
+
+      action = { type: 'SET_LOADING', payload: false};
+      dispatch(action);
     }
-    callApi();
-  }, [requestParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.url]);
+
+
+  const setRequestParams = (requestParams) => {
+    let action = { type: 'SET_REQUEST_PARAMS', payload: requestParams };
+
+    dispatch(action);
+  }
+
+  const performGET = async (url) => {
+    try {
+      let res = await axios.get(url);
+      let { headers, data } = res;
+      let action = { type: 'SET_HISTORY', payload: {url, data: { headers, data }}};
+      dispatch(action);
+      return res;
+    } catch(err) {
+      let { headers } = err;
+      let res = {headers, data: "Unable to process a request with the given url and/or request body."};
+      let action = { type: 'SET_HISTORY', payload: {url, res}};
+      dispatch(action);
+      return res;
+    }
+  }
 
   return (
     <>     
@@ -57,9 +139,11 @@ const App = () => {
       
       <div id="main-container">
         <Form setRequestParams={setRequestParams} />
-        <div>Request Method: {requestParams.method}</div>
-        <div>URL: {requestParams.url}</div>
-        <Results data={data} loading={loading} />
+        <div>Request Method: {state.method}</div>
+        <div>URL: {state.url}</div>
+        <History history={state.history} />
+        <Results data={state.data} loading={state.loading} />
+        
       </div>  
       
       <Footer />
@@ -67,18 +151,6 @@ const App = () => {
   );
 }
 
-const performGET = async (requestParams) => {
-  try {
-    let res = await axios.get(requestParams.url);
-    console.log(res.data);
-    return res;
-  } catch(err) {
-    if(err.response) {
-      return { "Error": err.response.statusText };
-    }
-    return { "Error": "Unable to process a request with those values." }
-  }
-}
 
 // const performPOST = async (requestParams) => {
 //   let config = {
