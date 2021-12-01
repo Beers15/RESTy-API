@@ -107,6 +107,7 @@ const App = () => {
       action = { type: 'SET_LOADING', payload: false};
       dispatch(action);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.url]);
 
 
