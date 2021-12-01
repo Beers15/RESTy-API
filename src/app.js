@@ -1,6 +1,6 @@
 import './app.scss';
 
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
@@ -8,48 +8,103 @@ import Results from './components/results';
 import axios from 'axios';
 
 const App = () => {
-  const [data, setData] = useState(null);
-  const [loading, isLoading] = useState(false);
-  const [requestParams, setRequestParams] = useState({});
-
+  let initialState = {
+    loading: false,
+    data: null,
+    method: 'GET',
+    body: {},
+    url: '',
+    history: []
+  }
+  
+  let reducer = (state, action) => {
+    switch(action.type) {
+      
+      case 'SET_DATA':
+        return {
+          ...state,
+          data: action.payload
+        }
+      case 'SET_LOADING':
+        return {
+          ...state,
+          loading: action.payload
+        }
+      case 'SET_REQUEST_PARAMS':
+        return {
+          ...state,
+          method: action.payload.method,
+          body: action.payload.body,
+          url: action.payload.url
+        }
+      default:
+        return state;
+    }
+  }
+  
+  let [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    async function callApi() {
-      isLoading(true);
-      let res;
-      if(requestParams.url === '') {
-        res = { message: "Empty url provided. Try something a bit more interesting." };
-        setData(res);
-        return;
-      }
-      switch(requestParams.method) {
-        case 'GET':
-          res = await performGET(requestParams);
-          setData(res);
-          break;
-        case 'POST':
-          //res = await performPOST(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        case 'PUT':
-          //res = await performPUT(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        case 'DELETE':
-          //res = await performDELETE(requestParams);
-          res = { message: "This method not supported yet." };
-          setData(res);
-          break;
-        default:
-          console.log("Invalid method choice given");
-          setData('Invalid method choice given');
-      }
-      isLoading(false);
+    if(state.url.length > 0) {
+      (async ()=> {
+        callApi();
+      })()
     }
-    callApi();
-  }, [requestParams]);
+  }, [state.url]);
+
+
+  async function callApi() {
+    let action = { type: 'SET_LOADING', payload: true }
+    dispatch(action);
+    console.log("LOADING TRUE?", state.loading)
+
+    action.type = 'SET_DATA';
+    let res;
+
+    switch(state.method) {
+      case 'GET':
+        let { headers, data } = await performGET(state.url);
+        action.payload = { headers, data };
+        console.log(headers, data)
+        dispatch(action);
+        break;
+      // case 'POST':
+      //   //res = await performPOST(requestParams);
+      //   res = { message: "This method not supported yet." };
+      //   action.payload = res;
+      
+      //   dispatch(action);
+      //   break;
+      // case 'PUT':
+      //   //res = await performPUT(requestParams);
+      //   res = { message: "This method not supported yet." };
+      //   action.payload = res;
+
+      //   dispatch(action);
+      //   break;
+      // case 'DELETE':
+      //   //res = await performDELETE(requestParams);
+      //   res = { message: "This method not supported yet." };
+      //   action.payload = res;
+
+      //   dispatch(action);
+      //   break;
+      default:
+        res = { message: "This method not supported yet." };
+        action.payload = res;
+
+        dispatch(action);
+    }
+    action = { type: 'SET_LOADING', payload: false};
+    dispatch(action);
+    console.log("LOADING FALSE?", state.loading);
+  }
+
+  const setRequestParams = (requestParams) => {
+    let action = { type: 'SET_REQUEST_PARAMS', payload: requestParams };
+
+    dispatch(action);
+  }
 
   return (
     <>     
@@ -57,9 +112,9 @@ const App = () => {
       
       <div id="main-container">
         <Form setRequestParams={setRequestParams} />
-        <div>Request Method: {requestParams.method}</div>
-        <div>URL: {requestParams.url}</div>
-        <Results data={data} loading={loading} />
+        <div>Request Method: {state.method}</div>
+        <div>URL: {state.url}</div>
+        <Results data={state.data} loading={state.loading} />
       </div>  
       
       <Footer />
@@ -67,12 +122,13 @@ const App = () => {
   );
 }
 
-const performGET = async (requestParams) => {
+const performGET = async (url) => {
   try {
-    let res = await axios.get(requestParams.url);
-    console.log(res.data);
+    let res = await axios.get(url);
+
     return res;
   } catch(err) {
+    console.log("ERR", err)
     if(err.response) {
       return { "Error": err.response.statusText };
     }

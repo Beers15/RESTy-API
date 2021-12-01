@@ -12,8 +12,8 @@ describe('testing the results component', () => {
   });
   it('should render the appropriate text when passed valid object data', () => {
 
-    let dataProp = 'Results:"root":{2 items"foo":int123"bar":string"abc"}';
-    let data = {foo: 123, bar: "abc"}
+    let dataProp = 'Results:HEADERS"root":{}0 itemsDATA"root":{2 items"foo":int123"bar":string"abc"}';
+    let data = {data: {foo: 123, bar: "abc"} }
 
     render(<Results data={data} loading={false} />);
     let displayText = screen.getByTestId('data');

@@ -19,6 +19,10 @@ __Phase 3__
 * A user will be able to enter the URL to an API and issue a GET request so that they can retrieve its data
 * A user will be able to see the results returned from an API request in their browser in a readable format
 
+__Phase 4__
+
+* A user will be able to see a list of their previous API calls, so that they can see the results again, quickly. The list will persist between refreshes.
+
 ------------
 
 ### Deployment
