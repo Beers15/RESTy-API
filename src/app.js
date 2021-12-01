@@ -54,60 +54,61 @@ const App = () => {
     if(state.url.length > 0) {
       let action = { type: 'SET_LOADING', payload: true }
       dispatch(action);
-      (async ()=> {
-        callApi();
-      })()
+     
+      async function callApi() {
+        let action = { type: 'SET_DATA', payload: null}
+        let res;
+
+        switch(state.method) {
+          case 'GET':
+            let { headers, data } = await performGET(state.url);
+            action.payload = { headers, data };
+            console.log(headers, data)
+            dispatch(action);
+
+            //update history with request data and used url
+            let history = [];
+            history = JSON.parse(localStorage.getItem('history')) || [];
+            history.push({url: state.url, data: { headers, data }});
+            localStorage.setItem('history', JSON.stringify(history));
+
+            break;
+          case 'POST':
+            //res = await performPOST(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+          
+            dispatch(action);
+            break;
+          case 'PUT':
+            //res = await performPUT(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+            break;
+          case 'DELETE':
+            //res = await performDELETE(requestParams);
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+            break;
+          default:
+            res = { message: "This method not supported yet." };
+            action.payload = res;
+
+            dispatch(action);
+        }
+      }
+     
+      callApi();
+
       action = { type: 'SET_LOADING', payload: false};
       dispatch(action);
     }
   }, [state.url]);
 
-  async function callApi() {
-    let action = { type: 'SET_DATA', payload: null}
-    let res;
-
-    switch(state.method) {
-      case 'GET':
-        let { headers, data } = await performGET(state.url);
-        action.payload = { headers, data };
-        console.log(headers, data)
-        dispatch(action);
-
-        //update history with request data and used url
-        let history = [];
-        history = JSON.parse(localStorage.getItem('history')) || [];
-        history.push({url: state.url, data: { headers, data }});
-        localStorage.setItem('history', JSON.stringify(history));
-
-        break;
-      case 'POST':
-        //res = await performPOST(requestParams);
-        res = { message: "This method not supported yet." };
-        action.payload = res;
-      
-        dispatch(action);
-        break;
-      case 'PUT':
-        //res = await performPUT(requestParams);
-        res = { message: "This method not supported yet." };
-        action.payload = res;
-
-        dispatch(action);
-        break;
-      case 'DELETE':
-        //res = await performDELETE(requestParams);
-        res = { message: "This method not supported yet." };
-        action.payload = res;
-
-        dispatch(action);
-        break;
-      default:
-        res = { message: "This method not supported yet." };
-        action.payload = res;
-
-        dispatch(action);
-    }
-  }
 
   const setRequestParams = (requestParams) => {
     let action = { type: 'SET_REQUEST_PARAMS', payload: requestParams };
