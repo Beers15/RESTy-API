@@ -52,19 +52,18 @@ const App = () => {
 
   useEffect(() => {
     if(state.url.length > 0) {
+      let action = { type: 'SET_LOADING', payload: true }
+      dispatch(action);
       (async ()=> {
         callApi();
-        
       })()
+      action = { type: 'SET_LOADING', payload: false};
+      dispatch(action);
     }
   }, [state.url]);
 
   async function callApi() {
-    let action = { type: 'SET_LOADING', payload: true }
-    dispatch(action);
-    console.log("LOADING TRUE?", state.loading)
-
-    action.type = 'SET_DATA';
+    let action = { type: 'SET_DATA', payload: null}
     let res;
 
     switch(state.method) {
@@ -73,42 +72,41 @@ const App = () => {
         action.payload = { headers, data };
         console.log(headers, data)
         dispatch(action);
+
+        //update history with request data and used url
         let history = [];
         history = JSON.parse(localStorage.getItem('history')) || [];
         history.push({url: state.url, data: { headers, data }});
         localStorage.setItem('history', JSON.stringify(history));
 
         break;
-      // case 'POST':
-      //   //res = await performPOST(requestParams);
-      //   res = { message: "This method not supported yet." };
-      //   action.payload = res;
+      case 'POST':
+        //res = await performPOST(requestParams);
+        res = { message: "This method not supported yet." };
+        action.payload = res;
       
-      //   dispatch(action);
-      //   break;
-      // case 'PUT':
-      //   //res = await performPUT(requestParams);
-      //   res = { message: "This method not supported yet." };
-      //   action.payload = res;
+        dispatch(action);
+        break;
+      case 'PUT':
+        //res = await performPUT(requestParams);
+        res = { message: "This method not supported yet." };
+        action.payload = res;
 
-      //   dispatch(action);
-      //   break;
-      // case 'DELETE':
-      //   //res = await performDELETE(requestParams);
-      //   res = { message: "This method not supported yet." };
-      //   action.payload = res;
+        dispatch(action);
+        break;
+      case 'DELETE':
+        //res = await performDELETE(requestParams);
+        res = { message: "This method not supported yet." };
+        action.payload = res;
 
-      //   dispatch(action);
-      //   break;
+        dispatch(action);
+        break;
       default:
         res = { message: "This method not supported yet." };
         action.payload = res;
 
         dispatch(action);
     }
-    action = { type: 'SET_LOADING', payload: false};
-    dispatch(action);
-    console.log("LOADING FALSE?", state.loading);
   }
 
   const setRequestParams = (requestParams) => {
@@ -125,11 +123,11 @@ const App = () => {
       dispatch(action);
       return res;
     } catch(err) {
-      console.log("ERR", err)
-      if(err.response) {
-        return { "Error": err.response.statusText };
-      }
-      return { "Error": "Unable to process a request with those values." }
+      let { headers } = err;
+      let res = {headers, data: "Unable to process a request with the given url and/or request body."};
+      let action = { type: 'SET_HISTORY', payload: {url, res}};
+      dispatch(action);
+      return res;
     }
   }
 

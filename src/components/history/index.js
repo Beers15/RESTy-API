@@ -8,7 +8,7 @@ const History = (props) => {
     if(localStorage.getItem('history')) {
       setOldHistory(JSON.parse(localStorage.getItem('history')));
     }
-  });
+  }, []);
 
 
   return (
@@ -20,10 +20,10 @@ const History = (props) => {
           oldHistory.map((item, key) => {
             //prevents the most recently searched for item from appearing in history twice
             if(props.history[props.history.length - 1] && item.url === props.history[props.history.length - 1].url && key === oldHistory.length - 1) return null;
-            
+
             return (
               <Accordion.Item eventKey={key}> 
-                <Accordion.Header>{item.url}</Accordion.Header>
+                <Accordion.Header>URL: {item.url}</Accordion.Header>
                 <Accordion.Body>
                  {JSON.stringify(item.data, undefined, 2)}
                 </Accordion.Body>
