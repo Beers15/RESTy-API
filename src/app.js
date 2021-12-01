@@ -5,6 +5,7 @@ import Header from './components/header';
 import Footer from './components/footer';
 import Form from './components/form';
 import Results from './components/results';
+import History from './components/history';
 import axios from 'axios';
 
 const App = () => {
@@ -37,6 +38,11 @@ const App = () => {
           body: action.payload.body,
           url: action.payload.url
         }
+      case 'SET_HISTORY':
+        return {
+          ...state,
+          history: [...state.history, action.payload]
+        }
       default:
         return state;
     }
@@ -48,10 +54,10 @@ const App = () => {
     if(state.url.length > 0) {
       (async ()=> {
         callApi();
+        
       })()
     }
   }, [state.url]);
-
 
   async function callApi() {
     let action = { type: 'SET_LOADING', payload: true }
@@ -67,6 +73,11 @@ const App = () => {
         action.payload = { headers, data };
         console.log(headers, data)
         dispatch(action);
+        let history = [];
+        history = JSON.parse(localStorage.getItem('history')) || [];
+        history.push({url: state.url, data: { headers, data }});
+        localStorage.setItem('history', JSON.stringify(history));
+
         break;
       // case 'POST':
       //   //res = await performPOST(requestParams);
@@ -106,6 +117,22 @@ const App = () => {
     dispatch(action);
   }
 
+  const performGET = async (url) => {
+    try {
+      let res = await axios.get(url);
+      let { headers, data } = res;
+      let action = { type: 'SET_HISTORY', payload: {url, data: { headers, data }}};
+      dispatch(action);
+      return res;
+    } catch(err) {
+      console.log("ERR", err)
+      if(err.response) {
+        return { "Error": err.response.statusText };
+      }
+      return { "Error": "Unable to process a request with those values." }
+    }
+  }
+
   return (
     <>     
       <Header />
@@ -114,7 +141,9 @@ const App = () => {
         <Form setRequestParams={setRequestParams} />
         <div>Request Method: {state.method}</div>
         <div>URL: {state.url}</div>
+        <History history={state.history} />
         <Results data={state.data} loading={state.loading} />
+        
       </div>  
       
       <Footer />
@@ -122,19 +151,6 @@ const App = () => {
   );
 }
 
-const performGET = async (url) => {
-  try {
-    let res = await axios.get(url);
-
-    return res;
-  } catch(err) {
-    console.log("ERR", err)
-    if(err.response) {
-      return { "Error": err.response.statusText };
-    }
-    return { "Error": "Unable to process a request with those values." }
-  }
-}
 
 // const performPOST = async (requestParams) => {
 //   let config = {

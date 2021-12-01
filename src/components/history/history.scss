@@ -1,0 +1,13 @@
+#history-container {
+  max-width: 550px;
+
+  .history-txt {
+    font-weight: 700;
+    font-family: 'Franklin Gothic Medium', 'Arial', Arial, sans-serif;
+  }
+
+  pre {
+    color:black;
+    overflow-wrap: break-all;
+  }
+}
